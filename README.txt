@@ -3,29 +3,31 @@
 #
 # Assignment 4: Physical Simulation
 
-Student name:
-Student number:
+Student name: NICHOLAS ALLIO
+Student number: 471794
 Hours spent on requirements (approx.):
-Hours spent on extra credit (approx.):
+Hours spent on extra credit (approx.): 0h
 
 # First, a 10-second poll about this assignment period:
 
 Did you go to exercise sessions?
 
 Did you work on the assignment using Aalto computers, your own computers, or both?
+	I WORKED WITH BOTH COMPUTERS
 
 # Which parts of the assignment did you complete? Mark them 'done'.
 # You can also mark non-completed parts as 'attempted' if you spent a fair amount of
 # effort on them. If you do, explain the work you did in the problems/bugs section
 # and leave your 'attempt' code in place (commented out if necessary) so we can see it.
 
-     R1 Euler integrator (1p): not done
+     R1 Euler integrator (1p): done
         R2 Spring system (2p): not done
  R3 Trapezoid integrator (2p): not done
       R4 Pendulum system (2p): not done
          R5 Cloth system (3p): not done
 
 # Did you do any extra credit work?
+	NO, I DID NOT
 
 (Describe what you did and, if there was a substantial amount of work involved, how you did it. Also describe how to use/activate your extra features, if they are interactive.)
 
