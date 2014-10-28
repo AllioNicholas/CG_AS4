@@ -60,6 +60,14 @@ void SpringSystem::reset() {
 	// Set the initial state for a particle system with one particle fixed
 	// at origin and another particle hanging off the first one with a spring.
 	// Place the second particle initially at start_pos.
+
+	const float rest_lenght = 3.0f;
+	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
+	
+	Spring sp = Spring(0, 0, spring_k, rest_lenght);
+
+
+
 }
 
 State SpringSystem::evalF(const State& state) const {
