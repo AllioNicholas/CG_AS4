@@ -66,10 +66,14 @@ void SpringSystem::reset() {
 
 	const float rest_lenght = 3.0f;
 	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
-	
-	Spring sp = Spring(0, 0, spring_k, rest_lenght);
 
+	spring_.k = spring_k;
+	spring_.rlen = rest_lenght;
 
+	state_[0] = start_part_pos;
+	state_[1] = 0;
+	state_[2] = start_pos;
+	state_[3] = -9.8f;
 
 }
 

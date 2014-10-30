@@ -11,7 +11,7 @@ void eulerStep(ParticleSystem& ps, float step) {
 	auto f0 = ps.evalF(x0);
 	auto x1 = State(n);
 
-	for (auto i = 0; i < n; i++) {
+	for (unsigned i = 0; i < n; i++) {
 		x1[i] = x0[i] + step * f0[i];
 	}
 
@@ -29,12 +29,12 @@ void trapezoidStep(ParticleSystem& ps, float step) {
 	auto x1 = State(n);
 	auto xt = State(n);
 
-	for (auto i = 0; i < n; i++) {
+	for (unsigned i = 0; i < n; i++) {
 		x1[i] = x0[i] + step * f0[i];
 	}
 
 	auto ft = ps.evalF(x1);
-	for (auto i = 0; i < n; i++) {
+	for (unsigned i = 0; i < n; i++) {
 		xt[i] = x0[i] + (0.5f * step) * (f0[i] + ft[i]);
 	}
 
