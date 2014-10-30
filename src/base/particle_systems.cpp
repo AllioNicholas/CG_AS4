@@ -17,12 +17,15 @@ inline Vec3f fGravity(float mass) {
 // force acting on particle at pos1 due to spring attached to pos2 at the other end
 inline Vec3f fSpring(const Vec3f& pos1, const Vec3f& pos2, float k, float rest_length) {
 	// YOUR CODE HERE (R2)
-	return Vec3f(0);
+	auto dist = distance(pos1, pos2);
+	Vec3f springForce = k * (rest_length - dist) * (pos1 * pos2) / dist;
+	return springForce;
 }
 
 inline Vec3f fDrag(const Vec3f& v, float k) {
 	// YOUR CODE HERE (R2)
-	return Vec3f(0);
+	Vec3f dragForce = -k * v;
+	return dragForce;
 }
 
 } // namespace
