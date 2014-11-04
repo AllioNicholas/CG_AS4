@@ -21,7 +21,7 @@ Did you work on the assignment using Aalto computers, your own computers, or bot
 # and leave your 'attempt' code in place (commented out if necessary) so we can see it.
 
      R1 Euler integrator (1p): done
-        R2 Spring system (2p): not done
+        R2 Spring system (2p): done
  R3 Trapezoid integrator (2p): done
       R4 Pendulum system (2p): not done
          R5 Cloth system (3p): not done

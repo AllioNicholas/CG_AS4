@@ -17,8 +17,8 @@ inline Vec3f fGravity(float mass) {
 // force acting on particle at pos1 due to spring attached to pos2 at the other end
 inline Vec3f fSpring(const Vec3f& pos1, const Vec3f& pos2, float k, float rest_length) {
 	// YOUR CODE HERE (R2)
-	auto dist = distance(pos1, pos2);
-	Vec3f springForce = k * (rest_length - dist) * (pos1 * pos2) / dist;
+	auto dist = pos1 - pos2;
+	Vec3f springForce = (dist / dist.length()) * (-dist.length() - rest_length) * k;
 	return springForce;
 }
 
@@ -64,16 +64,15 @@ void SpringSystem::reset() {
 	// at origin and another particle hanging off the first one with a spring.
 	// Place the second particle initially at start_pos.
 
-	const float rest_lenght = 3.0f;
 	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
 
 	spring_.k = spring_k;
-	spring_.rlen = rest_lenght;
+	spring_.rlen = start_pos.length();
 
 	state_[0] = start_part_pos;
-	state_[1] = 0;
+	state_[1] = start_part_pos;
 	state_[2] = start_pos;
-	state_[3] = -9.8f;
+	state_[3] = start_part_pos;
 
 }
 
@@ -84,6 +83,14 @@ State SpringSystem::evalF(const State& state) const {
 	// YOUR CODE HERE (R2)
 	// Return a derivative for the system as if it was in state "state".
 	// You can use the fGravity, fDrag and fSpring helper functions for the forces.
+	
+	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
+	auto force = fGravity(mass) + fDrag(state[3], drag_k) + fSpring(state[2], state[0], spring_.k, spring_.rlen);
+
+	f[0] = start_part_pos;
+	f[1] = start_part_pos;
+	f[2] = state[3];
+	f[3] = force / mass;
 
 	return f;
 }
