@@ -18,8 +18,9 @@ inline Vec3f fGravity(float mass) {
 inline Vec3f fSpring(const Vec3f& pos1, const Vec3f& pos2, float k, float rest_length) {
 	// YOUR CODE HERE (R2)
 	auto dist = pos1 - pos2;
-	Vec3f springForce = (dist / dist.length()) * (-dist.length() - rest_length) * k;
+	Vec3f springForce = (dist / dist.length()) * (rest_length - dist.length()) * k;
 	return springForce;
+
 }
 
 inline Vec3f fDrag(const Vec3f& v, float k) {
