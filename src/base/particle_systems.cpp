@@ -118,9 +118,8 @@ void PendulumSystem::reset() {
 	// YOUR CODE HERE (R4)
 	// Set the initial state for a pendulum system with n_ particles
 	// connected with springs into a chain from start_point to end_point.
-
+	
 	state_[pos(0)] = start_point;
-	state_[vel(0)] = Vec3f(0.0f, 0.0f, 0.0f);
 
 	springs_.clear(); //delete all previous data
 
@@ -131,9 +130,8 @@ void PendulumSystem::reset() {
 		springs_.push_back(s);
 
 		state_[pos(i)] = state_[pos(i - 1)] + delta;
-		state_[vel(i)] = Vec3f(0.0f, 0.0f, 0.0f);
 	}
-
+	
 }
 
 unsigned PendulumSystem::vel(unsigned index) const {
@@ -152,21 +150,24 @@ State PendulumSystem::evalF(const State& state) const {
 	// As in R2, return a derivative of the system state "state".
 
 	//first particle stays fixed
-	f[pos(0)] = Vec3f(0.0f, 0.0f, 0.0f);
+	f[pos(0)] = state[vel(0)];
 	f[vel(0)] = Vec3f(0.0f, 0.0f, 0.0f);
+	
+	//create, and initialize to 0 each element, vector where spring forces will be calculated taken into account both forces
+	std::vector<Vec3f> sForce;
+	for (auto i = 0; i < n_; i++)
+		sForce.push_back(0);
 
+	for (auto i = 0; i < n_ - 1; i++) {
+		//calculationg forces taking into account both springs
+		sForce[springs_[i].i1] += fSpring(state[pos(springs_[i].i1)], state[pos(springs_[i].i2)], springs_[i].k, springs_[i].rlen);
+		sForce[springs_[i].i2] += fSpring(state[pos(springs_[i].i2)], state[pos(springs_[i].i1)], springs_[i].k, springs_[i].rlen);
+	}
+	
 	for (auto i = 1; i < n_; i++) {
-		Vec3f force;
+		Vec3f force = fGravity(mass) + fDrag(state[vel(i)], drag_k) + sForce[i];
 
 		f[pos(i)] = state[vel(i)]; //derivate of position is velocity
-
-		if (i < n_ - 1) {
-			force = fGravity(mass) + fDrag(state[vel(i)], springs_[i - 1].k) + fSpring(state[pos(i)], state[pos(i - 1)], springs_[i - 1].k, springs_[i - 1].rlen) - fSpring(state[pos(i + 1)], state[pos(i)], springs_[i].k, springs_[i].rlen);
-		}
-		else {
-			force = fGravity(mass) + fDrag(state[vel(i)], springs_[i - 1].k) + fSpring(state[pos(i)], state[pos(i - 1)], springs_[i - 1].k, springs_[i - 1].rlen);
-		}
-
 		f[vel(i)] = force / mass; //derivate of velocity is acceleration
 	}
 
@@ -198,6 +199,12 @@ void ClothSystem::reset() {
 	// Construct a particle system with a x_ * y_ grid of particles,
 	// connected with a variety of springs as described in the handout:
 	// structural springs, shear springs and flex springs.
+
+	auto length_x = width / (x_ - 1);
+	auto length_y = height / (y_ - 1);
+	auto length_diag = FW::sqrt(length_x*length_x + length_y*length_y);
+
+
 }
 
 State ClothSystem::evalF(const State& state) const {
@@ -207,6 +214,10 @@ State ClothSystem::evalF(const State& state) const {
 	auto f = State(2*n);
 	// YOUR CODE HERE (R5)
 	// This will be much like in R2 and R4.
+	
+	
+	
+	
 	return f;
 }
 
