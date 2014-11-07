@@ -65,15 +65,15 @@ void SpringSystem::reset() {
 	// at origin and another particle hanging off the first one with a spring.
 	// Place the second particle initially at start_pos.
 
-	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
+	const auto start_part = Vec3f(0.0f, 0.0f, 0.0f);
 
 	spring_.k = spring_k;
 	spring_.rlen = start_pos.length();
 
-	state_[0] = start_part_pos;
-	state_[1] = start_part_pos;
+	state_[0] = start_part;
+	state_[1] = start_part; //start velocity
 	state_[2] = start_pos;
-	state_[3] = start_part_pos;
+	state_[3] = start_part; //start velocity
 
 }
 
@@ -85,11 +85,13 @@ State SpringSystem::evalF(const State& state) const {
 	// Return a derivative for the system as if it was in state "state".
 	// You can use the fGravity, fDrag and fSpring helper functions for the forces.
 	
-	const auto start_part_pos = Vec3f(0.0f, 0.0f, 0.0f);
+	const auto start_part = Vec3f(0.0f, 0.0f, 0.0f);
 	auto force = fGravity(mass) + fDrag(state[3], drag_k) + fSpring(state[2], state[0], spring_.k, spring_.rlen);
 
-	f[0] = start_part_pos;
-	f[1] = start_part_pos;
+	//first particle stays fixed
+	f[0] = start_part;
+	f[1] = start_part;
+	
 	f[2] = state[3];
 	f[3] = force / mass;
 
@@ -116,6 +118,30 @@ void PendulumSystem::reset() {
 	// YOUR CODE HERE (R4)
 	// Set the initial state for a pendulum system with n_ particles
 	// connected with springs into a chain from start_point to end_point.
+
+	state_[pos(0)] = start_point;
+	state_[vel(0)] = Vec3f(0.0f, 0.0f, 0.0f);
+
+	springs_.clear(); //delete all previous data
+
+	auto delta = (end_point - start_point) / (n_ - 1);
+
+	for (auto i = 1; i < n_; i++) {
+		Spring s = Spring(i, i - 1, spring_k, delta.length());
+		springs_.push_back(s);
+
+		state_[pos(i)] = state_[pos(i - 1)] + delta;
+		state_[vel(i)] = Vec3f(0.0f, 0.0f, 0.0f);
+	}
+
+}
+
+unsigned PendulumSystem::vel(unsigned index) const {
+	return (2 * index) + 1;
+}
+
+unsigned PendulumSystem::pos(unsigned index) const {
+	return 2 * index;
 }
   
 State PendulumSystem::evalF(const State& state) const {
@@ -124,6 +150,26 @@ State PendulumSystem::evalF(const State& state) const {
 	auto f = State(2*n_);
 	// YOUR CODE HERE (R4)
 	// As in R2, return a derivative of the system state "state".
+
+	//first particle stays fixed
+	f[pos(0)] = Vec3f(0.0f, 0.0f, 0.0f);
+	f[vel(0)] = Vec3f(0.0f, 0.0f, 0.0f);
+
+	for (auto i = 1; i < n_; i++) {
+		Vec3f force;
+
+		f[pos(i)] = state[vel(i)]; //derivate of position is velocity
+
+		if (i < n_ - 1) {
+			force = fGravity(mass) + fDrag(state[vel(i)], springs_[i - 1].k) + fSpring(state[pos(i)], state[pos(i - 1)], springs_[i - 1].k, springs_[i - 1].rlen) - fSpring(state[pos(i + 1)], state[pos(i)], springs_[i].k, springs_[i].rlen);
+		}
+		else {
+			force = fGravity(mass) + fDrag(state[vel(i)], springs_[i - 1].k) + fSpring(state[pos(i)], state[pos(i - 1)], springs_[i - 1].k, springs_[i - 1].rlen);
+		}
+
+		f[vel(i)] = force / mass; //derivate of velocity is acceleration
+	}
+
 	return f;
 }
 

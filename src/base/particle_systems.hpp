@@ -60,6 +60,8 @@ public:
 	void					reset() override;
 	Points					getPoints() override;
 	Lines					getLines() override;
+	unsigned				vel(unsigned index) const;
+	unsigned				pos(unsigned index) const;
 
 private:
 	unsigned				n_;
