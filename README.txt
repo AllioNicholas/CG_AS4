@@ -5,12 +5,13 @@
 
 Student name: NICHOLAS ALLIO
 Student number: 471794
-Hours spent on requirements (approx.):
+Hours spent on requirements (approx.): 20h
 Hours spent on extra credit (approx.): 0h
 
 # First, a 10-second poll about this assignment period:
 
 Did you go to exercise sessions?
+	NO, I DID'NT
 
 Did you work on the assignment using Aalto computers, your own computers, or both?
 	I WORKED WITH BOTH COMPUTERS
@@ -24,7 +25,7 @@ Did you work on the assignment using Aalto computers, your own computers, or bot
         R2 Spring system (2p): done
  R3 Trapezoid integrator (2p): done
       R4 Pendulum system (2p): done
-         R5 Cloth system (3p): not done
+         R5 Cloth system (3p): done
 
 # Did you do any extra credit work?
 	NO, I DID NOT
@@ -36,6 +37,7 @@ Did you work on the assignment using Aalto computers, your own computers, or bot
 (Please provide a list of the problems. If possible, describe what you think the cause is, how you have attempted to diagnose or fix the problem, and how you would attempt to diagnose or fix it if you had more time or motivation. This is important: we are more likely to assign partial credit if you help us understand what's going on.)
 
 # Did you collaborate with anyone in the class?
+	I DISCUSSED WITH MY CLASSMATES AND READ ANSWARES IN PIAZZA.
 
 (Did you help others? Did others help you? Let us know who you talked to, and what sort of help you gave or received.)
 

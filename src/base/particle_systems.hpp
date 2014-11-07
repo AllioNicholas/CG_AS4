@@ -60,8 +60,6 @@ public:
 	void					reset() override;
 	Points					getPoints() override;
 	Lines					getLines() override;
-	unsigned				vel(unsigned index) const;
-	unsigned				pos(unsigned index) const;
 
 private:
 	unsigned				n_;
@@ -76,6 +74,7 @@ public:
 	Points					getPoints() override;
 	Lines					getLines() override;
 	FW::Vec2i				getSize() { return FW::Vec2i(x_, y_); }
+	unsigned				part(unsigned len, unsigned x, unsigned y) const;
 
 private:
 	unsigned				x_, y_;

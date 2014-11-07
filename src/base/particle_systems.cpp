@@ -29,6 +29,14 @@ inline Vec3f fDrag(const Vec3f& v, float k) {
 	return dragForce;
 }
 
+inline unsigned vel(unsigned index) {
+	return (2 * index) + 1;
+}
+
+inline unsigned pos(unsigned index) {
+	return 2 * index;
+}
+
 } // namespace
 
 void SimpleSystem::reset() {
@@ -133,14 +141,6 @@ void PendulumSystem::reset() {
 	}
 	
 }
-
-unsigned PendulumSystem::vel(unsigned index) const {
-	return (2 * index) + 1;
-}
-
-unsigned PendulumSystem::pos(unsigned index) const {
-	return 2 * index;
-}
   
 State PendulumSystem::evalF(const State& state) const {
 	const auto drag_k = 0.5f;
@@ -203,8 +203,53 @@ void ClothSystem::reset() {
 	auto length_x = width / (x_ - 1);
 	auto length_y = height / (y_ - 1);
 	auto length_diag = FW::sqrt(length_x*length_x + length_y*length_y);
+	auto n = x_*y_;
+	for (auto x = 0; x < x_; x++) {
+		for (auto y = 0; y < y_; y++) {
+			state_[pos(part(x_, x, y))] = Vec3f((((float)x) / (x_ - 1))*width - width / 2, 0, -(((float)y) / (y_ - 1))*height);
+			Spring s;
+			
+			// Structural Springs
+			if (y < y_ - 1)  {
+				s = { part(x_, x, y), part(x_, x, y + 1), spring_k, length_y };
+				springs_.push_back(s);
+			}
 
+			if (x < x_ - 1) {
+				s = { part(x_, x, y), part(x_, x + 1, y), spring_k, length_x };
+				springs_.push_back(s);
+			}
+			
+			
+			// Shear Springs
+			if (x < x_ - 1 && y > 0) {
+				s = { part(x_, x, y), part(x_, x + 1, y - 1), spring_k, length_diag };
+				springs_.push_back(s);
+			}
+			
+			if (x < x_ - 1 && y < y_ - 1) {
+				s = { part(x_, x, y), part(x_, x + 1, y + 1), spring_k, length_diag };
+				springs_.push_back(s);
+			}
+			
+			
+			// Flexion Springs
+			if (y < y_ - 2) {
+				s = { part(x_, x, y), part(x_, x, y + 2), spring_k, length_y * 2 };
+				springs_.push_back(s);
+			}
 
+			if (x < x_ - 2) {
+				s = { part(x_, x, y), part(x_, x + 2, y), spring_k, length_x * 2 };
+				springs_.push_back(s);
+			}
+		}
+	}
+
+}
+
+unsigned ClothSystem::part(unsigned len, unsigned x, unsigned y) const {
+	return len * y + x;
 }
 
 State ClothSystem::evalF(const State& state) const {
@@ -215,9 +260,27 @@ State ClothSystem::evalF(const State& state) const {
 	// YOUR CODE HERE (R5)
 	// This will be much like in R2 and R4.
 	
+	//create, and initialize to 0 each element, vector where spring forces will be calculated taken into account both forces
+	std::vector<Vec3f> sForce;
+	for (auto i = 0; i < n; i++) 
+		sForce.push_back(0);
 	
+	for (auto i = 0; i < springs_.size(); i++) {
+		//calculationg forces taking into account both springs
+		sForce[springs_[i].i1] += fSpring(state[pos(springs_[i].i1)], state[pos(springs_[i].i2)], springs_[i].k, springs_[i].rlen);
+		sForce[springs_[i].i2] += fSpring(state[pos(springs_[i].i2)], state[pos(springs_[i].i1)], springs_[i].k, springs_[i].rlen);
+	}
 	
-	
+	for (auto i = 0; i < n; i++) {
+		Vec3f force = fGravity(mass) + fDrag(state[vel(i)], drag_k) + sForce[i];
+		
+		f[pos(i)] = state[vel(i)]; //derivate of position is velocity
+		f[vel(i)] = force / mass; //derivate of velocity is acceleration
+	}
+
+	f[vel(part(x_, 0, 0))] = Vec3f(0);
+	f[vel(part(x_, x_ - 1, 0))] = Vec3f(0);
+		
 	return f;
 }
 
